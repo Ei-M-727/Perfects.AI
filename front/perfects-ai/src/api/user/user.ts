@@ -1,6 +1,7 @@
 import { LoginParams, LoginResult } from "@/models/login";
 import { prefix } from "./request";
-import { EmailResult, ForgetPasswordParams } from "@/models/forget-password";
+import { ForgetPasswordParams } from "@/models/forget-password";
+import { EmailCodeParams } from "@/models/email-code";
 import { usePost, useGet } from "@/api/axios";
 import { User } from "@/models/user";
 import { MenuList } from "@models/menu.interface";
@@ -16,14 +17,14 @@ export const useSignup = () => {
 };
 
 export const useForgetPassword = () => {
-  return usePost<ForgetPasswordParams, EmailResult>(
+  return usePost<ForgetPasswordParams, CommonResult<undefined>>(
     `${prefix}/getVcodeByEmail`
   );
 };
 
 export const useVerifyEmailCode = () => {
-  return usePost<ForgetPasswordParams, EmailResult>(
-    `${prefix}/getVcodeByEmail`
+  return usePost<EmailCodeParams, CommonResult<undefined>>(
+    `${prefix}/updatePassword`
   );
 };
 

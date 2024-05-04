@@ -32,6 +32,7 @@ export default ({ command }: { command: string }) => {
         "/api": {
           target: "https://www.perfects.ai",
           changeOrigin: true,
+          ws: true,
           rewrite: (path: string) => path.replace(/^\/api/, "/api"),
         },
       },

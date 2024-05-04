@@ -1,6 +1,5 @@
-const { defineConfig } = require('eslint-define-config')
 
-module.exports = defineConfig({
+module.exports = {
   env: { // 环境
     browser: true, // 浏览器环境中的全局变量。
     node: true, // Node.js 全局变量和 Node.js 作用域。
@@ -35,8 +34,8 @@ module.exports = defineConfig({
     "react/no-this-in-sfc": 0,
     "react/prop-types": 0,
     "react/display-name": "off",
-    "typescript-eslint/no-explicit-any": true,
+    "typescript-eslint/no-explicit-any": "off",
     // eslint-plugin-react-hooks 的配置
     "react-hooks/rules-of-hooks": "error",
   }
-})
+}

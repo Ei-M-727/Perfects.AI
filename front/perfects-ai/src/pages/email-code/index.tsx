@@ -1,12 +1,15 @@
 import React, { FC, useCallback, useEffect, useState } from "react";
-import { Button, Form, Input } from "antd";
+import { Button, Form, Input, notification } from "antd";
 import { useNavigate, Link } from "react-router-dom";
-import { ForgetPasswordParams } from "@/models/forget-password";
-import { useForgetPassword } from "@/api/user/user";
+import { EmailCodeParams } from "@/models/email-code";
+import { useVerifyEmailCode, useForgetPassword } from "@/api/user/user";
 import { css } from "@emotion/css";
 import { useRecoilState } from "recoil";
 import { userState } from "@/stores/user";
 import { useCountdown } from "@/pages/common/hooks/useCountdown";
+import { Password } from "@/pages/common/components/Form";
+import { LockOutlined } from "@ant-design/icons";
+import CryptoJS from "crypto-js";
 
 const useStyles = () => {
   return {
@@ -54,27 +57,44 @@ const useStyles = () => {
     otp: css`
       text-align: center;
       margin-bottom: 0px;
+      & #vcode {
+        width: 100%;
+      }
     `,
   };
 };
 
 const EmailCode: FC = () => {
-  const mutation = useForgetPassword();
+  const mutationVerify = useVerifyEmailCode();
+  const mutationForget = useForgetPassword();
   const navigate = useNavigate();
   const [user] = useRecoilState(userState);
   const styles = useStyles();
   const [canSendCode, setCanSendCode] = useState<boolean>(false);
-  const { time } = useCountdown(10);
+  const { time, setTime } = useCountdown(60);
 
-  const sendEmailCode = useCallback(() => {
+  const sendEmailCode = useCallback(async () => {
     setCanSendCode(false);
-  }, []);
+    const { result } = await mutationForget.mutateAsync({
+      email: user.email,
+    });
 
-  const onFinished = async (form: ForgetPasswordParams) => {
-    const result = await mutation.mutateAsync(form);
+    if (result === "success") {
+      notification.success({ message: "验证码发送成功" });
+      setTime(60);
+    }
+  }, [setTime, mutationForget, user.email]);
 
-    if (result.status) {
-      navigate("/emailCode");
+  const onFinished = async (form: EmailCodeParams) => {
+    const { newpass, vcode } = form;
+    const { result } = await mutationVerify.mutateAsync({
+      email: user.email,
+      newpass: CryptoJS.MD5(newpass).toString(),
+      vcode,
+    });
+
+    if (result === "success") {
+      navigate("/login");
     }
   };
 
@@ -96,8 +116,35 @@ const EmailCode: FC = () => {
       </div>
       <div className={styles.main}>
         <Form onFinish={onFinished} className={styles.form}>
-          <Form.Item name="otp" className={styles.otp}>
-            <Input.OTP size="large" rootClassName={styles.otp} />
+          <Password
+            label="新密码"
+            name={"newpass"}
+            placeholder="请设置您的密码"
+            prefix={<LockOutlined style={{ color: "rgba(0,0,0,.25)" }} />}
+            rules={[{ required: true, message: "请输入密码！" }]}
+          />
+          <Password
+            label="确认密码"
+            name={"comfirmPassword"}
+            type="password"
+            placeholder="请再次输入您的密码"
+            prefix={<LockOutlined style={{ color: "rgba(0,0,0,.25)" }} />}
+            rules={[
+              { required: true, message: "请确认密码！" },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (!value || getFieldValue("newpass") === value) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject(
+                    new Error("The new password that you entered do not match!")
+                  );
+                },
+              }),
+            ]}
+          />
+          <Form.Item name="vcode" className={styles.otp}>
+            <Input.OTP size="large" />
           </Form.Item>
           <div className={styles.countdown}>
             {canSendCode ? (
@@ -112,7 +159,9 @@ const EmailCode: FC = () => {
               className={styles.mainLoginBtn}
               htmlType="submit"
               type="primary"
-            ></Button>
+            >
+              提交
+            </Button>
           </Form.Item>
         </Form>
         <Link to={"/forget-password"}>回到输入邮箱页面</Link>

@@ -15,5 +15,6 @@ export const useCountdown = (timeLine: number) => {
 
   return {
     time,
+    setTime,
   };
 };

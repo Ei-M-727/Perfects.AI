@@ -54,10 +54,10 @@ const ForgetPassword: FC = () => {
   const styles = useStyles();
 
   const onFinished = async (form: ForgetPasswordParams) => {
-    const result = await mutation.mutateAsync(form);
+    const { result } = await mutation.mutateAsync(form);
 
-    if (result.status) {
-      navigate("/emailCode");
+    if (result === "success") {
+      navigate("/email-code");
     }
   };
 
