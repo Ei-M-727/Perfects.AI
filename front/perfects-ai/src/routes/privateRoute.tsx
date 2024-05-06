@@ -13,17 +13,15 @@ const PrivateRoute: FC<RouteProps> = ({ children }) => {
     setUser((state) => ({ ...state, ...currentUser, logged: true }));
   }, [setUser, useInfo]);
   useEffect(() => {
-    getUserInfo();
-  }, []);
+    if (logged) {
+      getUserInfo();
+    }
+  }, [logged]);
   if (useInfo.error) {
     setUser({ ...user, logged: false });
     return <Navigate to="/login" />;
   }
-  return user.logged || logged ? (
-    <div>{children}</div>
-  ) : (
-    <Navigate to="/login" />
-  );
+  return logged ? <div>{children}</div> : <Navigate to="/login" />;
 };
 
 export default PrivateRoute;

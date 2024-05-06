@@ -9,6 +9,7 @@ import {
 } from "../../pages/common/components/Form/SingleInputText";
 import { css } from "@emotion/css";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
+import CryptoJS from "crypto-js";
 
 const useStyles = () => {
   return {
@@ -58,7 +59,11 @@ const LoginForm: FC = () => {
   const styles = useStyles();
 
   const onFinished = async (form: LoginParams) => {
-    const { result, data } = await loginMutation.mutateAsync(form);
+    const { account, password } = form;
+    const { result, data } = await loginMutation.mutateAsync({
+      account,
+      password: CryptoJS.MD5(password).toString(),
+    });
     if (result === "success") {
       localStorage.setItem("token", data.token);
 
