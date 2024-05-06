@@ -9,6 +9,7 @@ import EmailCodePage from "@/pages/email-code";
 import WrapperRouteComponent from "./config";
 import { useRoutes, RouteObject } from "react-router-dom";
 import { userRoute } from "./user";
+import { storylineRoute } from "./storyline";
 
 const NotFound = lazy(() => import("@/pages/404"));
 
@@ -37,6 +38,7 @@ const routeList: RouteObject[] = [
           </WrapperRouteComponent>
         ),
       },
+      storylineRoute,
       userRoute,
       {
         path: "*",

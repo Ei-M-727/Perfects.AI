@@ -16,6 +16,7 @@ import {
   FrownOutlined,
   SaveOutlined,
   ProfileOutlined,
+  FileWordOutlined,
 } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { useLocale } from "@/locales";
@@ -31,6 +32,7 @@ const IconMap: { [key: string]: React.ReactNode } = {
   shopping: <ShoppingOutlined />,
   profile: <ProfileOutlined />,
   saved: <SaveOutlined />,
+  file: <FileWordOutlined />,
 };
 
 const useStyles = () => {
@@ -53,6 +55,13 @@ const menuList = [
     children: [],
   },
   {
+    path: "/storyline",
+    name: "文书管理",
+    locale: "menu.storyline",
+    icon: "file",
+    children: [],
+  },
+  {
     path: "/user",
     name: "个人中心",
     locale: "menu.user",
@@ -68,7 +77,7 @@ const menuList = [
       },
       {
         id: 2,
-        path: "/user/baseInfo2",
+        path: "/user/baseInfo1",
         name: "订阅/付款",
         locale: "menu.user.pay",
         icon: "shopping",
@@ -76,7 +85,7 @@ const menuList = [
       },
       {
         id: 3,
-        path: "/user/baseInfo1",
+        path: "/user/baseInfo2",
         name: "已储存的经历",
         locale: "menu.user.store",
         icon: "saved",
@@ -96,9 +105,9 @@ const LayoutPage: FC = () => {
   const navigate = useNavigate();
   const { formatMessage } = useLocale();
   useEffect(() => {
-    // if (location.pathname === "/") {
-    //   navigate(`/${userCurrentState}`);
-    // }
+    if (location.pathname === "/storyline") {
+      navigate(`storyline/${userCurrentState}`);
+    }
   }, [navigate, location, userCurrentState]);
 
   const toggle = () => {
@@ -137,7 +146,6 @@ const LayoutPage: FC = () => {
         return (
           <Link to={menuItemProps.path}>
             <div style={{ display: "flex" }}>
-              {menuItemProps.icon}
               <span>{defaultDom}</span>
             </div>
           </Link>

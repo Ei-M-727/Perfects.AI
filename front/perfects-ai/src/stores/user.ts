@@ -8,7 +8,7 @@ const initialState: User = {
     (navigator.languages && navigator.languages[0]) ||
     navigator.language ||
     "en-us") as Locale,
-  updateStatus: "name1",
+  updateStatus: "name",
   logged: false,
   email: "",
   name: "",

@@ -10,8 +10,8 @@ const PrivateRoute: FC<RouteProps> = ({ children }) => {
   const logged = localStorage.getItem("token");
   const getUserInfo = useCallback(async () => {
     const { data: currentUser } = await useInfo.mutateAsync({});
-    setUser({ ...user, ...currentUser, logged: true });
-  }, [user, setUser, useInfo]);
+    setUser((state) => ({ ...state, ...currentUser, logged: true }));
+  }, [setUser, useInfo]);
   useEffect(() => {
     getUserInfo();
   }, []);

@@ -17,7 +17,7 @@ const useStyles = () => {
   };
 };
 
-const DashBoardPage: FC = () => {
+const NamePage: FC = () => {
   const styles = useStyles();
 
   return (
@@ -39,4 +39,4 @@ const DashBoardPage: FC = () => {
   );
 };
 
-export default DashBoardPage;
+export default NamePage;
